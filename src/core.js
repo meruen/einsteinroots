@@ -108,6 +108,14 @@ export const validate = (houses) => {
                 hash[12].checked = true;
             }
         }
+
+        if (house.color === 'Yellow' && house.cigar === 'Dunhill') {
+            hash[13].checked = true;
+        }
+
+        if (house.country === 'German' && house.cigar === 'Prince') {
+            hash[14].checked = true;
+        }
     }
 
 
@@ -167,6 +175,14 @@ export const build_empty_checks = () => {
         {
             checked: false,
             description: 'The man who smokes Blends lives at side of who drinks Water'
+        },
+        {
+            checked: false,
+            description: 'Who lives in the Yellow house smokes Dunhill'
+        },
+        {
+            checked: false,
+            description: 'German smokes Prince'
         }
     ]
 }

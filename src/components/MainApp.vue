@@ -1,12 +1,24 @@
 <template>
   <div class="mt-5 container">
-    <h1>Einstein Test</h1>
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <h1>Einstein Test</h1>
+      </div>
+      <div class="col-12 col-md-6 text-center">
+        <button @click="start_timer()" v-if="current_state === 'idle'" class="btn btn-primary btn-sm">START</button>
+        <button @click="surrender()" v-if="current_state === 'running'" class="btn btn-secondary btn-sm">SURRENDER</button>
+        <button @click="start_timer()" v-if="current_state === 'finished'" class="btn btn-primary btn-sm">FINISHED</button>
+        <h1>{{formated_time}}</h1>
+      </div>
+    </div>
+
     <p class="ml-1">How fast and smart you are?</p>
 
     <div class="row">
       <div class="col-12 col-md-2 ml-0 pl-0" v-for="house in houses" :key="house.id">
         <div class="card">
           <div class="card-body">
+            <h5>house {{house.id + 1}}</h5>
             <div class="form-group">
               <label for="color-select">Color</label>
               <select @change="validate" class="form-control" id="color-select" v-model="house.color">
@@ -54,9 +66,6 @@
           <label class="form-check-label" for="acomplishedx">{{check.description}}</label>
         </div>
       </div>
-      <div class="col-12 col-md-6">
-        {{formated_time}}
-      </div>
     </div>
   </div>
 
@@ -72,7 +81,8 @@
         checks: build_empty_checks(),
         timer: '00:00:00',
         timer_interval: null,
-        time_passed: 0
+        time_passed: 0,
+        current_state: 'idle'
       }
     },
     computed: {
@@ -81,7 +91,7 @@
       }
     },
     mounted() {
-      this.start_timer();
+      //this.start_timer();
     },
     methods: {
       tasks(first = false) {
@@ -115,7 +125,16 @@
         this.timer = `${hours}:${mins}:${secs}`;
       },
       start_timer() {
+        this.timer = '00:00:00';
+        this.current_state = 'running';
         this.timer_interval = setInterval(() => this.tick(), 1000);
+      },
+      surrender() {
+        clearInterval(this.timer_interval);
+        this.current_state = 'idle';
+        this.timer = '00:00:00';
+        this.houses = build_empty();
+        this.checks = build_empty_checks();
       },
       colors() {
         return colors;
@@ -134,6 +153,20 @@
       },
       validate() {
         this.checks = validate(this.houses);
+        let valid = true;
+
+        for (let i = 0; i < this.checks.length; i++) {
+          let check = this.checks[i];
+          if (!check.checked) {
+            valid = false;
+            break;
+          }
+        }
+
+        if (valid) {
+          this.current_state = 'finished';
+          clearInterval(this.timer_interval);
+        }
       }
     }
   }
@@ -158,6 +191,8 @@
     max-height: 25px;
     margin-bottom: 0px !important;
     padding-bottom: 0px !important;
-    font-size: small;
+    font-size: smaller;
+    color:whitesmoke ;
+    background: grey;
   }
 </style>
