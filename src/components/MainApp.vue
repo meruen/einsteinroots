@@ -4,36 +4,36 @@
     <p class="ml-1">How fast and smart you are?</p>
 
     <div class="row">
-      <div class="col-12 col-md-2" v-for="house in houses" :key="house.id">
+      <div class="col-12 col-md-2 ml-0 pl-0" v-for="house in houses" :key="house.id">
         <div class="card">
           <div class="card-body">
             <div class="form-group">
               <label for="color-select">Color</label>
-              <select class="form-control" id="color-select" v-model="house.color">
+              <select @change="validate" class="form-control" id="color-select" v-model="house.color">
                 <option v-for="color in colors()" :key="color">{{color}}</option>
               </select>
             </div>
             <div class="form-group">
               <label for="country-select">Country</label>
-              <select class="form-control" id="country-select" v-model="house.country">
+              <select @change="validate" class="form-control" id="country-select" v-model="house.country">
                 <option v-for="country in countries()" :key="country">{{country}}</option>
               </select>
             </div>
             <div class="form-group">
               <label for="drink-select">Drink</label>
-              <select class="form-control" id="drink-select" v-model="house.drink">
+              <select @change="validate" class="form-control" id="drink-select" v-model="house.drink">
                 <option v-for="drink in drinks()" :key="drink">{{drink}}</option>
               </select>
             </div>
             <div class="form-group">
               <label for="cigar-select">Cigar</label>
-              <select class="form-control" id="cigar-select" v-model="house.cigar">
+              <select @change="validate" class="form-control" id="cigar-select" v-model="house.cigar">
                 <option v-for="cigar in cigars()" :key="cigar">{{cigar}}</option>
               </select>
             </div>
             <div class="form-group">
               <label for="animal-select">Animal</label>
-              <select class="form-control" id="animal-select" v-model="house.animal">
+              <select @change="validate" class="form-control" id="animal-select" v-model="house.animal">
                 <option v-for="animal in animals()" :key="animal">{{animal}}</option>
               </select>
             </div>
@@ -41,19 +41,82 @@
         </div>
       </div>
     </div>
+    <div class="row mt-3">
+      <div class="col-12 col-md-4">
+        <div class="form-check" v-for="check in tasks(true)" :key="check.description">
+          <input type="checkbox" class="form-check-input" v-model="check.checked" id="acomplished">
+          <label class="form-check-label" for="acomplished">{{check.description}}</label>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="form-check" v-for="check in tasks(false)" :key="check.description">
+          <input type="checkbox" class="form-check-input" v-model="check.checked" id="acomplishedx">
+          <label class="form-check-label" for="acomplishedx">{{check.description}}</label>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        {{formated_time}}
+      </div>
+    </div>
   </div>
+
 </template>
 
 <script>
-  import {animals, build_empty, cigars, colors, countries, drinks} from "@/core";
+  import {animals, build_empty, build_empty_checks, cigars, colors, countries, drinks, validate} from "@/core";
 
   export default {
     data() {
       return {
-        houses: build_empty()
+        houses: build_empty(),
+        checks: build_empty_checks(),
+        timer: '00:00:00',
+        timer_interval: null,
+        time_passed: 0
       }
     },
+    computed: {
+      formated_time() {
+        return this.timer;
+      }
+    },
+    mounted() {
+      this.start_timer();
+    },
     methods: {
+      tasks(first = false) {
+        if (first) {
+          return this.checks.slice(0, 8);
+        } else {
+          return this.checks.slice(8);
+        }
+      },
+      tick() {
+        const time = this.timer.split(':');
+        let hours = parseInt(time[0]);
+        let mins = parseInt(time[1]);
+        let secs = parseInt(time[2]);
+
+        if (secs < 59) {
+          secs += 1;
+        } else {
+          secs = 0;
+          if (mins < 59) {
+            mins += 1;
+          } else {
+            mins = 0;
+            hours += 1;
+          }
+        }
+
+        if (hours < 10) hours = `0${hours}`;
+        if (mins < 10) mins = `0${mins}`;
+        if (secs < 10) secs = `0${secs}`;
+        this.timer = `${hours}:${mins}:${secs}`;
+      },
+      start_timer() {
+        this.timer_interval = setInterval(() => this.tick(), 1000);
+      },
       colors() {
         return colors;
       },
@@ -68,6 +131,9 @@
       },
       animals() {
         return animals;
+      },
+      validate() {
+        this.checks = validate(this.houses);
       }
     }
   }
