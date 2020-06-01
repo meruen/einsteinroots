@@ -7,7 +7,7 @@ Vue.use(IconsPlugin)
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-import 'bootstrap/dist/css/bootstrap_darkly.min.css'
+import '@/assets/bootstrap_darkly.min.css'
 
 Vue.config.productionTip = false
 

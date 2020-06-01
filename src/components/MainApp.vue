@@ -6,8 +6,8 @@
       </div>
       <div class="col-12 col-md-6 text-center">
         <button @click="start_timer()" v-if="current_state === 'idle'" class="btn btn-primary btn-sm">START</button>
-        <button @click="surrender()" v-if="current_state === 'running'" class="btn btn-secondary btn-sm">SURRENDER</button>
-        <button @click="start_timer()" v-if="current_state === 'finished'" class="btn btn-primary btn-sm">FINISHED</button>
+        <button @click="surrender()" v-if="current_state === 'running'" class="btn btn-danger btn-sm">SURRENDER</button>
+        <button @click="start_timer()" v-if="current_state === 'finished'" class="btn btn-success btn-sm">FINISHED</button>
         <h1>{{formated_time}}</h1>
       </div>
     </div>
@@ -62,7 +62,7 @@
       </div>
       <div class="col-12 col-md-4">
         <div class="form-check" v-for="check in tasks(false)" :key="check.description">
-          <input type="checkbox" class="form-check-input" v-model="check.checked" id="acomplishedx">
+          <input type="checkbox" onclick="return false;" class="form-check-input" v-model="check.checked" id="acomplishedx">
           <label class="form-check-label" for="acomplishedx">{{check.description}}</label>
         </div>
       </div>
